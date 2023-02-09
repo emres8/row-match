@@ -14,12 +14,15 @@ public class User {
     private Integer level;
     private Integer coin;
 
+    @Embedded
+    Audit audit;
     public User(Long id, String name, String email, Integer level, Integer coin) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.level = level;
         this.coin = coin;
+        this.audit = new Audit();
     }
 
     public User(String name, String email, Integer level, Integer coin) {
@@ -28,9 +31,11 @@ public class User {
         this.email = email;
         this.level = level;
         this.coin = coin;
+        this.audit = new Audit();
     }
 
     public User() {
+        this.audit = new Audit();
     }
 
     public Long getId() {

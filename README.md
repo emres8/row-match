@@ -1,6 +1,6 @@
 # TO DO
 
-* Implement claim reward endpoint
+* ~~Implement claim reward endpoint~~
 
 
 * Do todo's in current functions
@@ -16,6 +16,9 @@
 
 
 * Add oauth2 (security in general)
+
+
+* ~~add updatedAt createdAt~~
 
 
 * Scheduler to start finish tournaments

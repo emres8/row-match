@@ -32,6 +32,8 @@ public class Leaderboard {
     private Tournament tournament;
     */
 
+    @Embedded
+    Audit audit;
     public Leaderboard() {
     }
 
@@ -41,6 +43,7 @@ public class Leaderboard {
         this.userId = userId;
         this.score = score;
         this.isClaimed = isClaimed;
+        this.audit = new Audit();
     }
 
     public Leaderboard(Long tournamentId, Long groupId, Long userId) {
@@ -49,6 +52,7 @@ public class Leaderboard {
         this.userId = userId;
         this.score = 0;
         this.isClaimed = false;
+        this.audit = new Audit();
     }
 
 

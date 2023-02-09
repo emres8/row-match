@@ -16,10 +16,12 @@ public class Tournament {
 
     private String name;
 
+    @Embedded
+    private Audit audit;
     private Status status;
     public static enum Status {
-        ACTIVE,
-        FINISHED
+        FINISHED,
+        ACTIVE
     }
 
     // TODO: Scheduler for start finish of tournaments
@@ -33,19 +35,22 @@ public class Tournament {
 
     public Tournament(String name) {
         this.name = name;
+        this.status = Status.ACTIVE;
+        this.audit = new Audit();
+    }
+
+    public Tournament(String name, Status status) {
+
+        this.name = name;
+        this.status = status;
+        this.audit = new Audit();
     }
 
     public Tournament(Long id, Status status,  String name) {
         this.id = id;
         this.name = name;
         this.status = status;
-
-    }
-
-    public Tournament(String name, Status status) {
-        this.name = name;
-        this.status = status;
-
+        this.audit = new Audit();
     }
 
     public Long getId() {
@@ -65,6 +70,13 @@ public class Tournament {
     }
 
 
+    public Audit getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
+    }
 
     public Status getStatus() {
         return status;
