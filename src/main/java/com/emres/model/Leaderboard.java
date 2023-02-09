@@ -1,0 +1,74 @@
+package com.emres.model;
+
+import  com.emres.model.LeaderboardId;
+import jakarta.persistence.*;
+
+
+
+@Entity
+@Table(name = "leaderboard")
+@IdClass(LeaderboardId.class)
+public class Leaderboard {
+
+
+    @Id
+    @Column(name = "tournament_id")
+    private Long tournamentId;
+
+    @Id
+    @Column(name = "user_id")
+    Long userId;
+
+    @Column(name = "group_id")
+    private Long groupId;
+    @Column(name = "score")
+    private Integer score;
+
+    /*
+    @ManyToOne
+    @JoinColumn(name = "tournament_id", insertable = false, updatable = false)
+    private Tournament tournament;
+    */
+
+    public Leaderboard() {
+    }
+
+    public Leaderboard(Long tournamentId, Long groupId, Long userId, Integer score) {
+        this.tournamentId = tournamentId;
+        this.groupId = groupId;
+        this.userId = userId;
+        this.score = score;
+    }
+
+    public Long getTournamentId() {
+        return tournamentId;
+    }
+
+    public void setTournamentId(Long tournamentId) {
+        this.tournamentId = tournamentId;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+}

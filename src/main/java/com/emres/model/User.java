@@ -2,31 +2,30 @@ package com.emres.model;
 
 import jakarta.persistence.*;
 
-import java.util.Objects;
 
 @Entity
 @Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
-    private String lastName;
+    private String email;
     private Integer level;
     private Integer coin;
 
-    public User(Integer id, String name, String lastName, Integer level, Integer coin) {
+    public User(Long id, String name, String email, Integer level, Integer coin) {
         this.id = id;
         this.name = name;
-        this.lastName = lastName;
+        this.email = email;
         this.level = level;
         this.coin = coin;
     }
 
-    public User(String name, String lastName, Integer level, Integer coin) {
+    public User(String name, String email, Integer level, Integer coin) {
 
         this.name = name;
-        this.lastName = lastName;
+        this.email = email;
         this.level = level;
         this.coin = coin;
     }
@@ -34,11 +33,11 @@ public class User {
     public User() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -50,12 +49,12 @@ public class User {
         this.name = name;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getEmail() {
+        return email;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setEmail(String lastName) {
+        this.email = lastName;
     }
 
     public Integer getLevel() {
@@ -79,7 +78,7 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
                 ", level=" + level +
                 ", coin=" + coin +
                 '}';

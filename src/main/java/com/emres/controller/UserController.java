@@ -4,57 +4,72 @@ import com.emres.model.User;
 import com.emres.repository.UserRepository;
 import com.emres.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("api/v1/user")
 public class UserController {
 
-    @Autowired
-    UserRepository userRepository;
 
-    @GetMapping("/user")
-    public List<User> index(){
+    private final UserRepository userRepository;
+
+    @Autowired
+    UserController(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
+
+    @GetMapping()
+    public List<User> getUsers(){
         return userRepository.findAll();
     }
 
 
-
-    @GetMapping("/user/{id}")
-    public User getUserById(@PathVariable(value = "id") Long userId) {
+    @GetMapping("{userId}")
+    public User getUserById(@PathVariable(value = "userId") Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
     }
 
+    record NewUserRequest(
+            String name,
+            String email){
+    }
+    record NewUserResponse(
+            Long id,
+            Integer level,
+            Integer coin
+    ){}
 
-    public static final String FIND_USERS = "SELECT id,level,coin FROM user";
-    @PostMapping("/user")
-    @Query(value = FIND_USERS, nativeQuery = true)
-    public User create(@RequestBody Map<String, String> body){
-        String name = body.get("name");
-        String lastName = body.get("lastName");
-        Integer level = Integer.parseInt(body.get("level"));
-        Integer coin = Integer.parseInt(body.get("coin"));
-        return userRepository.save(new User(name, lastName, level, coin));
+    @PostMapping()
+    public NewUserResponse createUser(@RequestBody NewUserRequest request){
+        User user = new User();
+        user.setName(request.name());
+        user.setEmail(request.email());
+        user.setCoin(5000);
+        user.setLevel(1);
+        userRepository.save(user);
+        NewUserResponse response = new NewUserResponse(user.getId(),user.getLevel(),user.getCoin());
+        return response;
+    }
+    @DeleteMapping("{userId}")
+    public void deleteUser(@PathVariable("userId") Long id){
+        userRepository.deleteById(id);
     }
 
-    /*
-    @PutMapping("/user/{id}")
-    public User update(@PathVariable String id, @RequestBody Map<String, String> body){
-        Long userId = Long.parseLong(id);
-        Integer coin = Integer.parseInt(body.get("coin"));
-        Integer level = Integer.parseInt(body.get("level"));
+    @PostMapping("/levelup/{userId}")
+    public User updateLevel(@PathVariable("userId") Long userId){
+        int coinPerLevel = 25;
+         User user = userRepository.findById(userId)
+        .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-        User user = userRepository.findOne(userId);
-        user.setCoin(coin);
-        user.setLevel(level);
-        return userRepository.save(user)
+        user.setLevel(user.getLevel() + 1);
+        user.setCoin((user.getCoin() + coinPerLevel));
+        userRepository.save(user);
+        return user;
     }
-*/
 
 
 }
