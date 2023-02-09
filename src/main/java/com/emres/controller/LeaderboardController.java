@@ -1,6 +1,7 @@
 package com.emres.controller;
 
 import com.emres.exception.ResourceNotFoundException;
+import com.emres.helpers.LeaderboardHelpers;
 import com.emres.model.Leaderboard;
 import com.emres.model.LeaderboardId;
 import com.emres.model.User;
@@ -40,6 +41,8 @@ public class LeaderboardController {
     public ResponseEntity<Integer> getRank(@PathVariable("tournamentId") Long tournamentId,
                                            @PathVariable("userId") Long userId) {
         LeaderboardId id = new LeaderboardId(tournamentId, userId);
+
+        //TODO : handle when leaderboard exists but user is not in tournament
         Leaderboard leaderboard = leaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Leaderboard", "id", userId));
 
@@ -65,13 +68,10 @@ public class LeaderboardController {
 
         //TODO: check if reward is claimed
 
-        //TODO: group might be full
-        long groupId = (user.getLevel() - 1) % 100;
-
         //TODO: if user levelups and then tries to enter this code won't work
 
         // Check if user is already in the tournament
-        Leaderboard leaderboard = leaderboardRepository.findByTournamentIdAndGroupIdAndUserId(tournamentId,groupId,userId);
+        Leaderboard leaderboard = leaderboardRepository.findByTournamentIdAndUserId(tournamentId,userId);
 
         if(leaderboard != null){
             return new ResponseEntity<>("User is already in the tournament", HttpStatus.BAD_REQUEST);
@@ -80,6 +80,8 @@ public class LeaderboardController {
         user.setCoin(user.getCoin() - 1000);
         userRepository.save(user);
 
+        //TODO: group might be full
+        long groupId = (user.getLevel() - 1) % 100;
 
         leaderboard = new Leaderboard(tournamentId, groupId, userId, 0);
         leaderboardRepository.save(leaderboard);
@@ -89,4 +91,35 @@ public class LeaderboardController {
 
         return new ResponseEntity<>(leaderboards, HttpStatus.OK);
     }
-}
+
+    @PostMapping("/claim-reward/{tournamentId}/{userId}")
+    public ResponseEntity claimReward(@PathVariable("tournamentId") long tournamentId,
+                                          @PathVariable("userId") long userId) {
+        Tournament tournament = tournamentRepository.getTournamentById(tournamentId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+
+        LeaderboardId id = new LeaderboardId(tournamentId, userId);
+        Leaderboard leaderboard = leaderboardRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Leaderboard", "id", userId));
+
+        // Check if the tournament is active
+        if (!tournament.getStatus().equals(Tournament.Status.FINISHED)) {
+            return new ResponseEntity<>("Tournament is not finished yet. Cannot claim reward", HttpStatus.BAD_REQUEST);
+        }
+
+        int rank = leaderboardRepository.countByTournamentIdAndGroupIdAndScoreGreaterThan(
+                tournamentId, leaderboard.getGroupId(), leaderboard.getScore());
+
+        int reward = LeaderboardHelpers.calculateReward(rank);
+
+        //TODO: add a field called reward claimed and set it true here
+
+        user.setCoin(user.getCoin() + reward);
+
+
+
+        return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
+
+    }
+    }
+
