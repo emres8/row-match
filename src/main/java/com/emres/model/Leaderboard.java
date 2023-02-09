@@ -24,6 +24,8 @@ public class Leaderboard {
     @Column(name = "score")
     private Integer score;
 
+    @Column(name = "is_claimed")
+    private Boolean isClaimed;
     /*
     @ManyToOne
     @JoinColumn(name = "tournament_id", insertable = false, updatable = false)
@@ -33,12 +35,22 @@ public class Leaderboard {
     public Leaderboard() {
     }
 
-    public Leaderboard(Long tournamentId, Long groupId, Long userId, Integer score) {
+    public Leaderboard(Long tournamentId, Long groupId, Long userId, Integer score, Boolean isClaimed) {
         this.tournamentId = tournamentId;
         this.groupId = groupId;
         this.userId = userId;
         this.score = score;
+        this.isClaimed = isClaimed;
     }
+
+    public Leaderboard(Long tournamentId, Long groupId, Long userId) {
+        this.tournamentId = tournamentId;
+        this.groupId = groupId;
+        this.userId = userId;
+        this.score = 0;
+        this.isClaimed = false;
+    }
+
 
     public Long getTournamentId() {
         return tournamentId;
@@ -70,5 +82,13 @@ public class Leaderboard {
 
     public void setScore(Integer score) {
         this.score = score;
+    }
+
+    public Boolean getIsClaimed() {
+        return isClaimed;
+    }
+
+    public void setIsClaimed(Boolean isClaimed) {
+        this.isClaimed = isClaimed;
     }
 }

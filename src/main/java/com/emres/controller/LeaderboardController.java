@@ -62,13 +62,13 @@ public class LeaderboardController {
             return new ResponseEntity<>("User is not eligible", HttpStatus.BAD_REQUEST);
         }
         // Check if the tournament is active
-        if (!tournament.getStatus().equals(Tournament.Status.FINISHED)) {
+        if (tournament.getStatus().equals(Tournament.Status.FINISHED)) {
             return new ResponseEntity<>("Tournament is not active for entries", HttpStatus.BAD_REQUEST);
         }
 
-        //TODO: check if reward is claimed
+        //TODO: check if reward is claimed from last tournament (logic needed to detect last tournament)
 
-        //TODO: if user levelups and then tries to enter this code won't work
+
 
         // Check if user is already in the tournament
         Leaderboard leaderboard = leaderboardRepository.findByTournamentIdAndUserId(tournamentId,userId);
@@ -81,9 +81,9 @@ public class LeaderboardController {
         userRepository.save(user);
 
         //TODO: group might be full
-        long groupId = (user.getLevel() - 1) % 100;
+        long groupId = (long) (user.getLevel() - 1) / 100;
 
-        leaderboard = new Leaderboard(tournamentId, groupId, userId, 0);
+        leaderboard = new Leaderboard(tournamentId, groupId, userId);
         leaderboardRepository.save(leaderboard);
 
 
@@ -102,9 +102,14 @@ public class LeaderboardController {
         Leaderboard leaderboard = leaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Leaderboard", "id", userId));
 
-        // Check if the tournament is active
+        // Check if the tournament is finished
         if (!tournament.getStatus().equals(Tournament.Status.FINISHED)) {
             return new ResponseEntity<>("Tournament is not finished yet. Cannot claim reward", HttpStatus.BAD_REQUEST);
+        }
+
+        // Check if reward is already claimed
+        if (leaderboard.getIsClaimed()){
+            return new ResponseEntity<>("Reward is already claimed", HttpStatus.BAD_REQUEST);
         }
 
         int rank = leaderboardRepository.countByTournamentIdAndGroupIdAndScoreGreaterThan(
@@ -112,12 +117,10 @@ public class LeaderboardController {
 
         int reward = LeaderboardHelpers.calculateReward(rank);
 
-        //TODO: add a field called reward claimed and set it true here
+        leaderboard.setIsClaimed(true);
+        leaderboardRepository.save(leaderboard);
 
         user.setCoin(user.getCoin() + reward);
-
-
-
         return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
 
     }
