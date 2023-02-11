@@ -40,4 +40,25 @@ public class TournamentService {
         Tournament createdTournament = tournamentRepository.save(tournament);
         return ResponseEntity.ok(createdTournament);
     }
+
+    public void startTournament(String name){
+        Tournament tournament = new Tournament(name, Tournament.Status.ACTIVE);
+        Tournament createdTournament = tournamentRepository.save(tournament);
+        if (createdTournament != null) {
+            System.out.println("Tournament " + createdTournament.getName() + " is started.");
+        }
+    }
+
+    public void finishTournament(){
+        // Only one tournament is active at each time. Retrieve and set it FINISHED
+        Tournament activeTournament = tournamentRepository.getActiveTournament();
+
+        if (activeTournament != null){
+            activeTournament.setStatus(Tournament.Status.FINISHED);
+            tournamentRepository.save(activeTournament);
+            System.out.println("Tournament " + activeTournament.getName() + " is finished.");
+        }
+
+    }
+
 }
