@@ -3,9 +3,11 @@ package com.emres.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.io.Serializable;
+
 // Create Audit embeddable class to keep track of update and create times
 @Embeddable
-public class Audit {
+public class Audit implements Serializable {
     @Column(name = "created_at", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;

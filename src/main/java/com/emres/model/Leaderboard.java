@@ -3,12 +3,13 @@ package com.emres.model;
 import  com.emres.model.LeaderboardId;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 
 
 @Entity
-@Table(name = "leaderboard")
+@Table(name = "leaderboard", indexes = {@Index(columnList = "tournament_id , group_id")})
 @IdClass(LeaderboardId.class)
-public class Leaderboard {
+public class Leaderboard implements Serializable {
 
 
     @Id

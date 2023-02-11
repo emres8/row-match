@@ -9,7 +9,11 @@ import com.emres.model.User;
 import com.emres.repository.LeaderboardRepository;
 import com.emres.repository.TournamentRepository;
 import com.emres.repository.UserRepository;
+
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,7 +37,7 @@ public class LeaderboardService {
         this.leaderboardRepository = leaderboardRepository;
     }
 
-
+    @Cacheable(value = "leaderboard", key = "#groupId + '-' + #tournamentId")
     public List<Leaderboard> getLeaderboard(long tournamentId, long groupId) {
         return leaderboardRepository.findAllByTournamentIdAndGroupIdOrderByScoreDesc(tournamentId, groupId);
     }
@@ -50,6 +54,8 @@ public class LeaderboardService {
         return ResponseEntity.ok(rank + 1);
     }
 
+    @Transactional
+    @CacheEvict(value = "leaderboard", key = "#groupId + '-' + #tournamentId")
     public ResponseEntity enterTournament(long tournamentId, long userId){
         Tournament tournament = tournamentRepository.getTournamentById(tournamentId);
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
