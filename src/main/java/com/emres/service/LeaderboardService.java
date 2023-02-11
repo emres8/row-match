@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+
 @Service
 public class LeaderboardService {
 
@@ -62,15 +64,6 @@ public class LeaderboardService {
             return new ResponseEntity<>("Tournament is not active for entries", HttpStatus.BAD_REQUEST);
         }
 
-        // Check if reward is claimed from last tournament
-        Leaderboard lastLeaderBoard  = leaderboardRepository.findFirstByUserIdOrderByAudit_CreatedAtDesc(userId);
-
-        // If user entered a previous tournament and didn't claim reward don't allow to enter
-        if(lastLeaderBoard != null && lastLeaderBoard.getIsClaimed().equals(Boolean.FALSE)){
-            return new ResponseEntity<>("Please claim reward for previous tournament before entering a new one", HttpStatus.BAD_REQUEST);
-        }
-
-
         // Check if user is already in the tournament
         Leaderboard leaderboard = leaderboardRepository.findByTournamentIdAndUserId(tournamentId,userId);
 
@@ -78,11 +71,20 @@ public class LeaderboardService {
             return new ResponseEntity<>("User is already in the tournament", HttpStatus.BAD_REQUEST);
         }
 
+        // Check if reward is claimed from last tournament
+        // (Order all tournaments of user by createdAt [except the tournament user tries to enter] retrieve first)
+        Leaderboard lastLeaderBoard  = leaderboardRepository.findFirstByUserIdAndTournamentIdNotOrderByAudit_CreatedAtDesc(userId, tournamentId);
+
+        if(lastLeaderBoard != null && lastLeaderBoard.getIsClaimed().equals(Boolean.FALSE)){
+            return new ResponseEntity<>("Please claim reward for previous tournament before entering a new one", HttpStatus.BAD_REQUEST);
+        }
+
         user.setCoin(user.getCoin() - 1000);
         userRepository.save(user);
 
-        //TODO: group might be full
-        long groupId = (long) (user.getLevel() - 1) / 100;
+
+        long groupId = LeaderboardHelpers.generateNewGroupId(user.getLevel(), tournamentId);
+
 
         leaderboard = new Leaderboard(tournamentId, groupId, userId);
         leaderboardRepository.save(leaderboard);
@@ -123,5 +125,7 @@ public class LeaderboardService {
         user.setCoin(user.getCoin() + reward);
         return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
     }
+
+
 
 }
