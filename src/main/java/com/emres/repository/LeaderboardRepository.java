@@ -11,7 +11,12 @@ import java.util.List;
 @Repository
 public interface LeaderboardRepository extends JpaRepository<Leaderboard, LeaderboardId> {
 
+
+    Leaderboard findFirstByUserIdOrderByAudit_CreatedAtDesc(Long userId);
+
     Leaderboard findByTournamentIdAndUserId(long tournamentId, Long userId);
+
     Integer countByTournamentIdAndGroupIdAndScoreGreaterThan(long tournamentId, long groupId, Integer score);
+
     List<Leaderboard> findAllByTournamentIdAndGroupIdOrderByScoreDesc(Long tournamentId, Long groupId);
 }

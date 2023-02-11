@@ -25,12 +25,12 @@ public class TournamentService {
     }
 
 
-    public List<Tournament> getTournament(){
+    public List<Tournament> getTournaments(){
         return tournamentRepository.findAll();
     }
 
 
-    public Tournament getUserById(Long tournamentId) {
+    public Tournament getTournamentById(Long tournamentId) {
         return tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tournament", "id", tournamentId));
     }

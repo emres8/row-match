@@ -24,12 +24,6 @@ public class Tournament {
         ACTIVE
     }
 
-    // TODO: Scheduler for start finish of tournaments
-/*
-    private LocalDateTime startTime;
-
-    private LocalDateTime endTime;
-*/
     public Tournament() {
     }
 
@@ -104,6 +98,7 @@ public class Tournament {
         return "Tournament{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", audit=" + audit +
                 ", status=" + status +
                 '}';
     }

@@ -62,8 +62,13 @@ public class LeaderboardService {
             return new ResponseEntity<>("Tournament is not active for entries", HttpStatus.BAD_REQUEST);
         }
 
-        //TODO: check if reward is claimed from last tournament (logic needed to detect last tournament)
+        // Check if reward is claimed from last tournament
+        Leaderboard lastLeaderBoard  = leaderboardRepository.findFirstByUserIdOrderByAudit_CreatedAtDesc(userId);
 
+        // If user entered a previous tournament and didn't claim reward don't allow to enter
+        if(lastLeaderBoard != null && lastLeaderBoard.getIsClaimed().equals(Boolean.FALSE)){
+            return new ResponseEntity<>("Please claim reward for previous tournament before entering a new one", HttpStatus.BAD_REQUEST);
+        }
 
 
         // Check if user is already in the tournament

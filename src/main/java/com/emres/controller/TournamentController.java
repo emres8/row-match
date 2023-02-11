@@ -22,14 +22,13 @@ public class TournamentController {
 
     @GetMapping()
     public List<Tournament> getTournament(){
-        return tournamentService.getTournament();
+        return tournamentService.getTournaments();
     }
 
 
-
     @GetMapping("{tournamentId}")
-    public Tournament getUserById(@PathVariable(value = "tournamentId") Long tournamentId) {
-        return tournamentService.getUserById(tournamentId);
+    public Tournament getTournamentById(@PathVariable(value = "tournamentId") Long tournamentId) {
+        return tournamentService.getTournamentById(tournamentId);
     }
 
     @PostMapping
