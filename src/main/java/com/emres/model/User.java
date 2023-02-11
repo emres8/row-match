@@ -34,6 +34,17 @@ public class User {
         this.audit = new Audit();
     }
 
+
+    public record NewUserRequest(
+            String name,
+            String email){
+    }
+    public record NewUserResponse(
+            Long id,
+            Integer level,
+            Integer coin
+    ){}
+
     public User() {
         this.audit = new Audit();
     }
