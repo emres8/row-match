@@ -1,7 +1,11 @@
 package com.emres.service;
 
 import com.emres.exception.ResourceNotFoundException;
+import com.emres.model.Leaderboard;
 import com.emres.model.User;
+import com.emres.model.Tournament;
+import com.emres.repository.LeaderboardRepository;
+import com.emres.repository.TournamentRepository;
 import com.emres.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,10 +18,15 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final TournamentRepository tournamentRepository;
+
+    private final LeaderboardRepository leaderboardRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository, TournamentRepository tournamentRepository, LeaderboardRepository leaderboardRepository){
         this.userRepository = userRepository;
+        this.tournamentRepository = tournamentRepository;
+        this.leaderboardRepository = leaderboardRepository;
     }
 
     public List<User> getUsers(){
@@ -54,6 +63,13 @@ public class UserService {
         user.setLevel(user.getLevel() + 1);
         user.setCoin((user.getCoin() + coinPerLevel));
         userRepository.save(user);
+
+        // Increase score of user in active tournament
+        Tournament active = tournamentRepository.getActiveTournament();
+        Leaderboard leaderboard = leaderboardRepository.findByTournamentIdAndUserId(active.getId(), user.getId());
+        leaderboard.setScore(leaderboard.getScore() + 1);
+        leaderboardRepository.save(leaderboard);
+
         return user;
     }
 
