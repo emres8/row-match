@@ -31,7 +31,7 @@ public class LeaderboardService {
 
     private static Map<Integer, Stack<User>> levelStacks;
 
-    private static final int MAX_STACK_SIZE = 5;
+    private static final int MAX_STACK_SIZE = 20;
     private static final int MAX_LEVEL = 2000;
     private static final int LEVEL_INTERVAL = 100;
 
@@ -81,8 +81,8 @@ public class LeaderboardService {
     }
 
 
-    private record TournamentEntryResponse(
-            List<User> leaderboard,
+    public record TournamentEntryResponse<T>(
+            List<T> leaderboard,
             String msg
     ) {
     }
@@ -136,7 +136,7 @@ public class LeaderboardService {
 
             // If the stack size reaches the maximum size, create a Leaderboard entry
             if (stack.size() == MAX_STACK_SIZE) {
-                long groupId = new Random().nextLong();
+                long groupId = new Random().nextLong(0,10000000);
 
                 List<Leaderboard> leaderboards = new ArrayList<>();
                 while (!stack.isEmpty()) {
@@ -144,7 +144,7 @@ public class LeaderboardService {
                     leaderboards.add(new Leaderboard(tournamentId, groupId, temp.getId()));
                 }
                 leaderboardRepository.saveAll(leaderboards);
-                return new ResponseEntity<>(leaderboards, HttpStatus.OK);
+                return new ResponseEntity<>(new TournamentEntryResponse(leaderboards, "Entered the tournament, group leaderboard is shown."), HttpStatus.OK);
             }
 
 
@@ -180,10 +180,9 @@ public class LeaderboardService {
             }
 
             int rank = leaderboardRepository.countByTournamentIdAndGroupIdAndScoreGreaterThan(
-                    tournamentId, leaderboard.getGroupId(), leaderboard.getScore());
+                    tournamentId, leaderboard.getGroupId(), leaderboard.getScore()) + 1;
 
             int reward = LeaderboardHelpers.calculateReward(rank);
-
             leaderboard.setIsClaimed(true);
             leaderboardRepository.save(leaderboard);
 
@@ -192,5 +191,9 @@ public class LeaderboardService {
         } catch (Exception e) {
             return new ResponseEntity<>(String.format("Unknown error occurred %s", e.getMessage()), HttpStatus.NOT_FOUND);
         }
+    }
+
+    public void clearAll(){
+        leaderboardRepository.deleteAll();
     }
 }

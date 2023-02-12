@@ -42,14 +42,20 @@ public class TournamentService {
     }
 
     public void startTournament(String name){
-        Tournament tournament = new Tournament(name, Tournament.Status.ACTIVE);
-        Tournament createdTournament = tournamentRepository.save(tournament);
-        if (createdTournament != null) {
-            System.out.println("Tournament " + createdTournament.getName() + " is started.");
+        try {
+            Tournament tournament = new Tournament(name, Tournament.Status.ACTIVE);
+            Tournament createdTournament = tournamentRepository.save(tournament);
+            if (createdTournament != null) {
+                System.out.println("Tournament " + createdTournament.getName() + " is started.");
+            }
+        } catch (Exception e) {
+            System.out.println(String.format("Unknown error occurred %s", e.getMessage()));
         }
     }
 
     public void finishTournament(){
+        try{
+
         // Only one tournament is active at each time. Retrieve and set it FINISHED
         Tournament activeTournament = tournamentRepository.getActiveTournament();
 
@@ -58,7 +64,13 @@ public class TournamentService {
             tournamentRepository.save(activeTournament);
             System.out.println("Tournament " + activeTournament.getName() + " is finished.");
         }
+        } catch (Exception e) {
+            System.out.println(String.format("Unknown error occurred %s", e.getMessage()));
+        }
+    }
 
+    public void clearAll(){
+        tournamentRepository.deleteAll();
     }
 
 }

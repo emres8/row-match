@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 public interface TournamentRepository extends JpaRepository<Tournament, Long> {
     Tournament getTournamentById(long tournamentId);
 
+    Tournament getTournamentByName(String name);
+
     @Query("SELECT t FROM Tournament t WHERE t.status = 1")
     Tournament getActiveTournament();
     

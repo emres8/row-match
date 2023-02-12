@@ -12,7 +12,6 @@ public class TournamentScheduler {
     private final TournamentService tournamentService;
 
 
-
     @Autowired
     public TournamentScheduler(TournamentService tournamentService){
         this.tournamentService = tournamentService;
@@ -20,12 +19,20 @@ public class TournamentScheduler {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void startNewTournament() {
-        String tournament_name = TournamentHelpers.createDailyTournamentName();
-        tournamentService.startTournament(tournament_name);
+        try {
+            String tournament_name = TournamentHelpers.createDailyTournamentName();
+            tournamentService.startTournament(tournament_name);
+        }catch (Exception e) {
+            System.out.println(String.format("Unknown error occurred %s", e.getMessage()));
+        }
     }
 
     @Scheduled(cron = "0 0 20 * * *")
     public void finishTournament() {
-        tournamentService.finishTournament();
+        try {
+            tournamentService.finishTournament();
+        }catch (Exception e) {
+                System.out.println(String.format("Unknown error occurred %s", e.getMessage()));
+            }
     }
 }

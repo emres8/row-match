@@ -3,6 +3,7 @@ package com.emres.controller;
 import com.emres.model.User;
 import com.emres.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,8 +35,9 @@ public class UserController {
 
 
     @PostMapping()
-    public User.NewUserResponse createUser(@RequestBody User.NewUserRequest request){
-       return userService.createUser(request);
+    public ResponseEntity createUser(@RequestParam(value = "name") final String name,
+                                     @RequestParam(value = "email") final String email){
+       return userService.createUser(name, email);
     }
 
     @DeleteMapping("{userId}")
@@ -44,7 +46,7 @@ public class UserController {
     }
 
     @PostMapping("/levelup/{userId}")
-    public User updateLevel(@PathVariable("userId") Long userId){
+    public ResponseEntity updateLevel(@PathVariable("userId") Long userId){
         return userService.updateLevel(userId);
     }
 

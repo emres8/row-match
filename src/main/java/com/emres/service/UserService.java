@@ -8,6 +8,8 @@ import com.emres.repository.LeaderboardRepository;
 import com.emres.repository.TournamentRepository;
 import com.emres.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -39,15 +41,18 @@ public class UserService {
     }
 
 
-    public User.NewUserResponse createUser(User.NewUserRequest request){
-        User user = new User();
-        user.setName(request.name());
-        user.setEmail(request.email());
-        user.setCoin(5000);
-        user.setLevel(1);
-        userRepository.save(user);
-        User.NewUserResponse response = new User.NewUserResponse(user.getId(),user.getLevel(),user.getCoin());
-        return response;
+    public ResponseEntity createUser(String name, String email){
+        try {
+            User user = new User();
+            user.setName(name);
+            user.setEmail(email);
+            user.setCoin(5000);
+            user.setLevel(1);
+            userRepository.save(user);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return new ResponseEntity<>(String.format("Unknown error occurred %s", e.getMessage()), HttpStatus.NOT_FOUND);
+    }
     }
 
     public void deleteUser(Long id){
@@ -55,22 +60,38 @@ public class UserService {
     }
 
 
-    public User updateLevel(Long userId){
-        int coinPerLevel = 25;
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+    public ResponseEntity updateLevel(Long userId) {
+        try {
 
-        user.setLevel(user.getLevel() + 1);
-        user.setCoin((user.getCoin() + coinPerLevel));
-        userRepository.save(user);
+            int coinPerLevel = 25;
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-        // Increase score of user in active tournament
-        Tournament active = tournamentRepository.getActiveTournament();
-        Leaderboard leaderboard = leaderboardRepository.findByTournamentIdAndUserId(active.getId(), user.getId());
-        leaderboard.setScore(leaderboard.getScore() + 1);
-        leaderboardRepository.save(leaderboard);
+            user.setLevel(user.getLevel() + 1);
+            user.setCoin((user.getCoin() + coinPerLevel));
+            userRepository.save(user);
 
-        return user;
+            // Increase score of user in active tournament
+            Tournament active = tournamentRepository.getActiveTournament();
+
+            if(active == null){
+                //There is no active tournament
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            }
+            Leaderboard leaderboard = leaderboardRepository.findByTournamentIdAndUserId(active.getId(), user.getId());
+            if (leaderboard != null) {
+                leaderboard.setScore(leaderboard.getScore() + 1);
+                leaderboardRepository.save(leaderboard);
+            }
+
+            return new ResponseEntity(user, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(String.format("Unknown error occurred %s", e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public void clearAll(){
+        userRepository.deleteAll();
     }
 
 
