@@ -26,13 +26,13 @@ public class LeaderboardController {
     }
 
     @GetMapping("/rank/{tournamentId}/{userId}")
-    public ResponseEntity<Integer> getRank(@PathVariable("tournamentId") Long tournamentId,
+    public ResponseEntity getRank(@PathVariable("tournamentId") Long tournamentId,
                                            @PathVariable("userId") Long userId) {
         return leaderboardService.getRank(tournamentId, userId);
     }
     @PostMapping("/enter/{tournamentId}/{userId}")
     public ResponseEntity enterTournament(@PathVariable("tournamentId") long tournamentId,
-                                          @PathVariable("userId") long userId){
+                                          @PathVariable("userId") long userId) {
         return leaderboardService.enterTournament(tournamentId, userId);
     }
 

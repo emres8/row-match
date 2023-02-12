@@ -3,16 +3,13 @@
 * ~~Implement claim reward endpoint~~
 
 
-* Do todo's in current functions
-
-
-* Add validation in models and Requests
+* Add score when levelup
 
 
 * Unit Tests (Load tests if enough time)
 
 
-* Use Redis to cache leaderboard to show in real time
+* ~~Use Redis to cache leaderboard to show in real time~~
 
 
 * Add oauth2 (security in general)
@@ -21,5 +18,5 @@
 * ~~add updatedAt createdAt~~
 
 
-* Scheduler to start finish tournaments
+* ~~Scheduler to start finish tournaments~~
 
