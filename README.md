@@ -20,7 +20,7 @@ Navigate to the project directory
 
 
 ```
-cd tournament-management
+cd row-match
 ```
 
 Run mysql and redis servers in seperate shell tabs, for my case:
