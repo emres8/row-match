@@ -12,7 +12,7 @@ Clone the project repository to your local machine
 
 
 ```
-git clone https://github.com/<your-username>/tournament-management.git'''
+git clone https://github.com/emres8/row-match.git
 ```
 
 
@@ -33,6 +33,7 @@ and
 redis-server
 ```
 
+Update application.yml configs (committed my password by mistake) to connect databases
 Run the Spring Boot application
 ```
 mvn spring-boot:run
