@@ -4,6 +4,7 @@ import  com.emres.model.LeaderboardId;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 
 @Entity
@@ -55,7 +56,6 @@ public class Leaderboard implements Serializable {
         this.isClaimed = false;
         this.audit = new Audit();
     }
-
 
     public Long getTournamentId() {
         return tournamentId;
