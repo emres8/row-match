@@ -50,12 +50,13 @@ The application should now be running and accessible at http://localhost:8080. <
 #### How to execute the tests
 
 To execute the unit tests, run the following command: <br>
-(May not work for some reason couldn't connect ApplicationTest class with other test classes. <br>
-Can execute test classes one by one but couldn't execute via mvn)
+
 
 ```
 mvn test
 ```
+(May not work for some reason couldn't connect ApplicationTest class with other test classes. <br>
+Can execute test classes one by one but couldn't execute via mvn)
 
 This will run all the test cases included in the project.
 
