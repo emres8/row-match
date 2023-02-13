@@ -2,9 +2,9 @@
 
 ### Requirements
 
-    Java 8 or later
+    Java 17 or later
     Maven 3.x
-    Spring Boot 2.x
+    Spring Boot 3.x
 
 
 ### How to run the code
