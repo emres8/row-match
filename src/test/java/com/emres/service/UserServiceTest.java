@@ -8,9 +8,7 @@ import com.emres.model.Leaderboard;
 import com.emres.repository.LeaderboardRepository;
 import com.emres.repository.TournamentRepository;
 import com.emres.repository.UserRepository;
-import com.emres.service.LeaderboardService;
-import com.emres.service.TournamentService;
-import com.emres.service.UserService;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
