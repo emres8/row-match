@@ -59,6 +59,7 @@ This will run all the test cases included in the project.
 
 ### Design of the Project
 
+![alt text](https://github.com/emres/row-match/blob/master/dbdiagram.png?raw=true)
 
 #### Further Potential Improvements
 * For validating request and response types and throwing exceptions when necessary could be improved throughout to project. 

@@ -1,12 +1,10 @@
-package com.emres.service;
+package com.emres.auth;
 
-import com.emres.auth.AuthenticationResponse;
-import com.emres.auth.AuthenticationService;
-import com.emres.auth.RegisterRequest;
-import com.emres.auth.AuthenticationRequest;
+
 import com.emres.model.User;
 
 import com.emres.repository.UserRepository;
+import com.emres.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +25,8 @@ public class AuthenticationServiceTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired UserService userService;
+    @Autowired
+    UserService userService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
